@@ -1,0 +1,20 @@
+<svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0"><defs><mask id="mask1_6_9" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="14" height="14">
+<g id="clip0_15609_184">
+<path id="Vector_16" d="M14,0h-14v14h14z" fill="white"/>
+</g>
+</mask><radialGradient id="paint2_radial_6_9" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(27.7039 600.982) scale(15.1386 120.825)">
+<stop offset="0.385135" stop-color="#9E72BA"/>
+<stop offset="0.734299" stop-color="#D65C67"/>
+<stop offset="0.931035" stop-color="#D6635C"/>
+</radialGradient></defs><g id="Clip path group">
+<mask id="mask1_6_9" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="32" y="594" width="14" height="14">
+<g id="clip0_15609_184">
+<path id="Vector_16" d="M46 594H32V608H46V594Z" fill="white"/>
+</g>
+</mask>
+<g mask="url(#mask1_6_9)">
+<g id="Group">
+<path id="Vector_17" d="M0,6.482c3.5,0 6.4824,-2.982 6.4824,-6.482h1.0352c0,3.5 2.9824,6.482 6.4824,6.482v1.036c-3.5,0 -6.4824,2.982 -6.4824,6.482h-1.0352c0,-3.5 -2.9824,-6.482 -6.4824,-6.482z" fill="url(#paint2_radial_6_9)"/>
+</g>
+</g>
+</g></svg>
