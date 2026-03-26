@@ -38,6 +38,9 @@ export default function SeoInsights({ metrics, oldMetrics, trafficHistory }: Seo
           <DomainRatingGauge value={metrics.DR} />
         </div>
 
+        {/* Horizontal divider (mobile/tablet) */}
+        <div className="h-px w-full bg-brand-gray-200 lg:hidden" />
+
         {/* Vertical divider */}
         <div className="hidden w-px shrink-0 bg-brand-gray-200 lg:block" />
 
@@ -63,6 +66,9 @@ export default function SeoInsights({ metrics, oldMetrics, trafficHistory }: Seo
           </div>
           <TrafficChart data={trafficHistory} />
         </div>
+
+        {/* Horizontal divider (mobile/tablet) */}
+        <div className="h-px w-full bg-brand-gray-200 lg:hidden" />
 
         {/* Vertical divider */}
         <div className="hidden w-px shrink-0 bg-brand-gray-200 lg:block" />
