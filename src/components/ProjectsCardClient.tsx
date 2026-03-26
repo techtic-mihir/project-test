@@ -153,10 +153,10 @@ export default function ProjectsCardClient({
             type="button"
             key={project.PROJECT}
             onClick={() => handleProjectChange(project.PROJECT)}
-            className={`inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-pill px-3 text-sm font-medium transition-all duration-200 ease-in-out ${
+            className={`inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-pill border-[1.5px] px-3 text-sm font-medium transition-all duration-200 ease-in-out ${
               isActive
-                ? "border-[1.5px] border-brand-indigo bg-[rgba(62,79,234,0.10)] text-brand-indigo"
-                : "bg-brand-gray-100 text-brand-navy hover:bg-brand-gray-200"
+                ? "border-brand-indigo bg-[rgba(62,79,234,0.10)] text-brand-indigo"
+                : "border-brand-gray-200 bg-brand-gray-100 text-brand-navy hover:bg-brand-gray-200"
             }`}
             aria-pressed={isActive}
           >
@@ -179,10 +179,10 @@ export default function ProjectsCardClient({
       <button
         type="button"
         onClick={handleAddProjectClick}
-        className={`inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-pill px-3 text-sm font-medium transition-all duration-200 ease-in-out ${
+        className={`inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-pill border-[1.5px] px-3 text-sm font-medium transition-all duration-200 ease-in-out ${
           showAddProject
-            ? "border-[1.5px] border-brand-indigo bg-[rgba(62,79,234,0.10)] text-brand-indigo"
-            : "bg-brand-gray-100 text-brand-navy hover:bg-brand-gray-200"
+            ? "border-brand-indigo bg-[rgba(62,79,234,0.10)] text-brand-indigo"
+            : "border-brand-gray-200 bg-brand-gray-100 text-brand-navy hover:bg-brand-gray-200"
         }`}
         aria-label="Add project"
       >

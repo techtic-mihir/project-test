@@ -125,7 +125,7 @@ export function EmptyStateOverlay({
       <>
         Add a new project
         <br />
-        Enter your website URL below
+        to view your Statistics
       </>
     );
 
@@ -163,7 +163,7 @@ export function EmptyStateOverlay({
 
       <div className="flex flex-1 flex-col items-center justify-center gap-4 sm:gap-5">
         <h2 className="text-center text-xl font-medium leading-[1.2] text-brand-navy sm:text-2xl">{title}</h2>
-        <AddProjectInput className="max-w-full" onSuccess={onAddSuccess} />
+        <AddProjectInput className="max-w-[361px]" onSuccess={onAddSuccess} />
       </div>
     </div>
   );
