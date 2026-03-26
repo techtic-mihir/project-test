@@ -62,9 +62,11 @@ export default function AiCitations() {
   return (
     <section aria-label="AI Citations" className="space-y-4">
       {/* Section header */}
-      <div className="flex items-center gap-1.5 border-b border-brand-gray-200 pb-2">
+      <div className="flex items-center gap-1 border-b border-brand-gray-200 pb-2">
         <h3 className="text-sm font-medium text-brand-navy sm:text-base">AI citations</h3>
-        <InfoIcon />
+        <span className="mb-2">
+          <InfoIcon />
+        </span>
       </div>
 
       {/* Citations grid */}

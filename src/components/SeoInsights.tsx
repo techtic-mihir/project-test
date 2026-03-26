@@ -17,9 +17,11 @@ export default function SeoInsights({ metrics, oldMetrics, trafficHistory }: Seo
   return (
     <section aria-label="SEO Insights" className="space-y-4 border-b border-brand-gray-200 pb-4">
       {/* Section header */}
-      <div className="flex items-center gap-1.5 border-b border-brand-gray-200 pb-2">
+      <div className="flex items-center gap-1 border-b border-brand-gray-200 pb-2">
         <h3 className="text-base font-medium text-brand-navy">SEO Insights</h3>
-        <InfoIcon />
+        <span className="mb-2">
+          <InfoIcon />
+          </span>
       </div>
 
       {/* Metrics grid: 3-column layout with vertical dividers */}
@@ -44,7 +46,9 @@ export default function SeoInsights({ metrics, oldMetrics, trafficHistory }: Seo
           <div className="space-y-2">
             <div className="flex items-center gap-1 text-sm font-normal text-brand-navy">
               <span>Organic traffic</span>
+              <span className="mb-2">
               <InfoIcon />
+              </span>
             </div>
             <div className="flex flex-wrap items-end gap-1">
               <span className="text-[32px] font-medium leading-none text-brand-blue">

@@ -23,7 +23,9 @@ export default function MetricCard({
     <div className="space-y-2">
       <div className="flex items-center gap-1 text-sm font-normal text-brand-navy">
         <span>{label}</span>
-        <InfoIcon />
+        <span className="mb-2">
+          <InfoIcon />
+        </span>
       </div>
 
       <div className="flex flex-wrap items-end gap-x-1 gap-y-1">

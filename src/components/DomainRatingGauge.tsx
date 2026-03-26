@@ -10,7 +10,7 @@ export default function DomainRatingGauge({ value }: DomainRatingGaugeProps) {
       <svg viewBox="0 0 190 110" className="h-auto w-full">
         <defs>
           <linearGradient id="drGaugeGradient" x1="20" y1="95" x2="170" y2="95" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="rgba(0,128,255,0.3)" />
+            <stop offset="0%" stopColor="#0080FF1A" />
             <stop offset="100%" stopColor="#0080FF" />
           </linearGradient>
         </defs>

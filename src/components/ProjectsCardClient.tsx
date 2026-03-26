@@ -4,11 +4,13 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import AiCitations from "@/components/AiCitations";
-import EmptyState from "@/components/EmptyState";
+import EmptyState, { DashboardGhostBackground, EmptyStateOverlay } from "@/components/EmptyState";
 import SeoInsights from "@/components/SeoInsights";
 import SkeletonLoader from "@/components/SkeletonLoader";
 import { getProjectMetrics, getProjectTrafficHistory } from "@/lib/api";
 import type { Metrics, ProjectItem, TrafficHistoryItem } from "@/types";
+import TopRightDirectionArrowIcon from "@/icons/top-right-direction-arrow.svg";
+import TrendUpIcon from "@/icons/trend-up-icon.svg";
 
 interface ProjectsCardClientProps {
   initialProjects: ProjectItem[];
@@ -41,6 +43,8 @@ export default function ProjectsCardClient({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showAddProject, setShowAddProject] = useState(false);
+  /** Project whose metrics are shown behind the “add project” overlay (previous selection). */
+  const [addProjectBaseKey, setAddProjectBaseKey] = useState<string | null>(null);
   const [cache, setCache] = useState<MetricsCache>(() =>
     initialActiveProject && initialMetrics
       ? {
@@ -91,8 +95,8 @@ export default function ProjectsCardClient({
   }
 
   async function handleProjectChange(projectName: string) {
-    // Exit add-project mode when selecting a real project
     setShowAddProject(false);
+    setAddProjectBaseKey(null);
     await updateProjectData(projectName);
 
     const params = new URLSearchParams(searchParams.toString());
@@ -111,10 +115,18 @@ export default function ProjectsCardClient({
 
   function handleAddProjectClick() {
     if (initialProjects.length > 0) {
+      const base = activeProject ?? initialProjects[0].PROJECT;
+      setAddProjectBaseKey(base);
       setShowAddProject(true);
-      setActiveProject(null);
     }
   }
+
+  function handleAddProjectSuccess() {
+    setShowAddProject(false);
+    setAddProjectBaseKey(null);
+  }
+
+  const addOverlaySnapshot = addProjectBaseKey ? cache[addProjectBaseKey] : null;
 
   return (
     <div className="rounded-card bg-brand-white p-4 sm:p-6 lg:p-8">
@@ -126,30 +138,24 @@ export default function ProjectsCardClient({
         <div className="flex items-center gap-2">
           <button
             type="button"
-            className="inline-flex cursor-not-allowed items-center gap-1 rounded-btn bg-brand-gray-100 px-3 py-2 text-base font-medium text-brand-navy transition-colors hover:bg-brand-gray-200"
+            className="inline-flex cursor-pointer items-center gap-1 rounded-btn bg-brand-gray-100 px-3 py-2 text-base font-medium text-brand-navy transition-colors hover:bg-brand-gray-200"
             aria-label="Detailed Analytics"
           >
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M4 14L8 10L11 13L16 7" stroke="#2B456B" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M16 11V7H12" stroke="#2B456B" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <TrendUpIcon aria-hidden="true" />
             <span className="hidden sm:block">Detailed Analytics</span>
           </button>
           <button
             type="button"
-            className="flex h-[42px] w-[42px] cursor-not-allowed items-center justify-center rounded-btn bg-brand-gray-100 transition-colors hover:bg-brand-gray-200"
+            className="flex cursor-pointer w-[42px] h-[42px] items-center justify-center rounded-btn bg-brand-gray-100 transition-colors hover:bg-brand-gray-200"
             aria-label="Export"
           >
-            <svg width="15" height="15" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M8 14L14.7 7.3M9 6.8H15.2V13" stroke="#2B456B" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M15 11.5V16C15 16.6 14.6 17 14 17H6C5.4 17 5 16.6 5 16V8C5 7.4 5.4 7 6 7H10.5" stroke="#2B456B" strokeWidth="1.7" strokeLinecap="round" />
-            </svg>
+            <TopRightDirectionArrowIcon aria-hidden="true" />
           </button>
         </div>
       </div>
 
       {/* Project tabs */}
-      <div className="mb-8 overflow-x-auto scrollbar-hide">
+      <div className="mb-8 ml-3 overflow-x-auto scrollbar-hide">
         <div className="flex min-w-max flex-nowrap gap-3">
           {initialProjects.map((project) => {
             const isActive = !showAddProject && activeProject === project.PROJECT;
@@ -201,38 +207,58 @@ export default function ProjectsCardClient({
       </div>
 
       {/* Content area */}
-      {showAddProject ? (
-        /* Show Empty State with blurred background + "Add your first project" overlay */
-        <EmptyState />
-      ) : initialProjects.length > 0 ? (
-        <div className="rounded-card border border-brand-gray-200 p-3 sm:p-4">
-          {isLoading ? (
-            <SkeletonLoader />
-          ) : error ? (
-            <div className="space-y-3 py-8 text-center">
-              <p className="text-sm text-red-600">{error}</p>
-              {activeProject ? (
-                <button
-                  type="button"
-                  className="rounded-pill bg-brand-gray-100 px-4 py-2 text-sm font-medium text-brand-navy transition-colors hover:bg-brand-gray-200"
-                  onClick={() => updateProjectData(activeProject)}
-                >
-                  Retry
-                </button>
-              ) : null}
+      {initialProjects.length > 0 ? (
+        <div className="relative rounded-card">
+          {!showAddProject ? (
+            <>
+              {isLoading ? (
+                <SkeletonLoader />
+              ) : error ? (
+                <div className="space-y-3 py-8 text-center">
+                  <p className="text-sm text-red-600">{error}</p>
+                  {activeProject ? (
+                    <button
+                      type="button"
+                      className="rounded-pill bg-brand-gray-100 px-4 py-2 text-sm font-medium text-brand-navy transition-colors hover:bg-brand-gray-200"
+                      onClick={() => updateProjectData(activeProject)}
+                    >
+                      Retry
+                    </button>
+                  ) : null}
+                </div>
+              ) : activeData ? (
+                <div key={activeProject} className="animate-fadeSlideUp space-y-4">
+                  <SeoInsights
+                    metrics={activeData.metrics}
+                    oldMetrics={activeData.oldMetrics}
+                    trafficHistory={activeData.trafficHistory}
+                  />
+                  <AiCitations />
+                </div>
+              ) : (
+                <SkeletonLoader />
+              )}
+            </>
+          ) : null}
+
+          {showAddProject ? (
+            <div className="relative overflow-hidden rounded-card border border-brand-gray-200">
+              {addOverlaySnapshot ? (
+                <DashboardGhostBackground
+                  snapshot={{
+                    metrics: addOverlaySnapshot.metrics,
+                    oldMetrics: addOverlaySnapshot.oldMetrics,
+                    trafficHistory: addOverlaySnapshot.trafficHistory,
+                  }}
+                />
+              ) : (
+                <div className="p-4">
+                  <SkeletonLoader />
+                </div>
+              )}
+              <EmptyStateOverlay variant="add" onAddSuccess={handleAddProjectSuccess} />
             </div>
-          ) : activeData ? (
-            <div key={activeProject} className="animate-fadeSlideUp space-y-4">
-              <SeoInsights
-                metrics={activeData.metrics}
-                oldMetrics={activeData.oldMetrics}
-                trafficHistory={activeData.trafficHistory}
-              />
-              <AiCitations />
-            </div>
-          ) : (
-            <SkeletonLoader />
-          )}
+          ) : null}
         </div>
       ) : (
         <EmptyState />
