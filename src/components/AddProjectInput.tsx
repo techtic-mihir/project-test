@@ -57,7 +57,7 @@ export default function AddProjectInput({
           className="w-full border-none bg-transparent text-sm font-normal text-brand-navy placeholder:text-brand-gray-400 outline-none"
           aria-label="Project URL"
         />
-        <button type="submit" disabled={isSubmitting} className="ml-3 shrink-0 disabled:cursor-not-allowed" aria-label="Add project">
+        <button type="submit" disabled={isSubmitting} className="ml-2 shrink-0 disabled:cursor-not-allowed sm:ml-3" aria-label="Add project">
           {isSubmitting ? (
             <span className="block h-[18px] w-[18px] animate-spin rounded-full border-2 border-brand-indigo border-t-transparent" />
           ) : (

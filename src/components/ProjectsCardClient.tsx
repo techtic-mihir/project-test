@@ -129,16 +129,16 @@ export default function ProjectsCardClient({
   const addOverlaySnapshot = addProjectBaseKey ? cache[addProjectBaseKey] : null;
 
   return (
-    <div className="rounded-card bg-brand-white p-4 sm:p-6 lg:p-8">
+    <div className="rounded-card bg-brand-white p-3.5 sm:p-6 lg:p-8">
       {/* Header row */}
-      <div className="mb-8 flex items-center justify-between gap-3">
-        <h1 className="text-2xl font-medium text-brand-navy">
+      <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-xl font-medium text-brand-navy sm:text-2xl">
           {initialProjects.length > 0 ? "Projekte" : "Projects"}
         </h1>
-        <div className="flex items-center gap-2">
+        <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-start">
           <button
             type="button"
-            className="inline-flex cursor-pointer items-center gap-1 rounded-btn bg-brand-gray-100 px-3 py-2 text-base font-medium text-brand-navy transition-colors hover:bg-brand-gray-200"
+            className="inline-flex cursor-pointer items-center gap-1 rounded-btn bg-brand-gray-100 px-2.5 py-2 text-sm font-medium text-brand-navy transition-colors hover:bg-brand-gray-200 sm:px-3 sm:text-base"
             aria-label="Detailed Analytics"
           >
             <TrendUpIcon aria-hidden="true" />
@@ -155,7 +155,7 @@ export default function ProjectsCardClient({
       </div>
 
       {/* Project tabs */}
-      <div className="mb-8 ml-3 overflow-x-auto scrollbar-hide">
+      <div className="mb-6 ml-0 overflow-x-auto scrollbar-hide sm:mb-8 sm:ml-3">
         <div className="flex min-w-max flex-nowrap gap-3">
           {initialProjects.map((project) => {
             const isActive = !showAddProject && activeProject === project.PROJECT;
@@ -242,7 +242,7 @@ export default function ProjectsCardClient({
           ) : null}
 
           {showAddProject ? (
-            <div className="relative overflow-hidden rounded-card border border-brand-gray-200">
+            <div className="relative overflow-hidden">
               {addOverlaySnapshot ? (
                 <DashboardGhostBackground
                   snapshot={{

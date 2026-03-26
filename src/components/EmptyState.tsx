@@ -13,7 +13,7 @@ export type DashboardSnapshot = {
 export function DashboardGhostBackground({ snapshot }: { snapshot?: DashboardSnapshot | null }) {
   if (snapshot) {
     return (
-      <div className="space-y-4 p-4 opacity-30 blur-[3px] select-none pointer-events-none" aria-hidden="true">
+      <div className="space-y-4 p-3.5 opacity-30 blur-[3px] select-none pointer-events-none sm:p-4" aria-hidden="true">
         <SeoInsights
           metrics={snapshot.metrics}
           oldMetrics={snapshot.oldMetrics}
@@ -25,9 +25,9 @@ export function DashboardGhostBackground({ snapshot }: { snapshot?: DashboardSna
   }
 
   return (
-    <div className="space-y-4 p-4 opacity-30 blur-[3px] select-none pointer-events-none" aria-hidden="true">
+      <div className="space-y-4 p-3.5 opacity-30 blur-[3px] select-none pointer-events-none sm:p-4" aria-hidden="true">
       <div className="flex items-center gap-1.5 border-b border-brand-gray-200 pb-2 text-base font-medium text-brand-navy">
-        SEO Insights &amp; AI citations
+        SEO Insights &amp; AI Citations
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="7" cy="7" r="6" stroke="#ABABAB" strokeWidth="1.17" />
           <text x="7" y="10" textAnchor="middle" fill="#ABABAB" fontSize="8" fontFamily="sans-serif">
@@ -36,7 +36,7 @@ export function DashboardGhostBackground({ snapshot }: { snapshot?: DashboardSna
         </svg>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <div className="space-y-3">
           <div className="space-y-1">
             <div className="text-xs text-brand-navy">Domain Rating (DR)</div>
@@ -47,7 +47,7 @@ export function DashboardGhostBackground({ snapshot }: { snapshot?: DashboardSna
             <div className="text-xs text-brand-navy">/100</div>
           </div>
           <div className="flex justify-start">
-            <svg viewBox="0 0 140 80" className="h-16 w-24">
+            <svg viewBox="0 0 140 80" className="h-14 w-20 sm:h-16 sm:w-24">
               <path d="M15 70 A55 55 0 0 1 125 70" fill="none" stroke="#E9EAEB" strokeWidth="14" strokeLinecap="round" />
               <path
                 d="M15 70 A55 55 0 0 1 125 70"
@@ -69,7 +69,7 @@ export function DashboardGhostBackground({ snapshot }: { snapshot?: DashboardSna
             <span className="text-2xl font-medium text-brand-blue">429.9K</span>
             <span className="text-xs text-brand-green">+31.8K</span>
           </div>
-          <div className="h-20 rounded bg-brand-gray-100" />
+          <div className="h-16 rounded bg-brand-gray-100 sm:h-20" />
         </div>
 
         <div className="space-y-3">
@@ -91,8 +91,8 @@ export function DashboardGhostBackground({ snapshot }: { snapshot?: DashboardSna
         </div>
       </div>
 
-      <div className="border-t border-brand-gray-200 pt-2 text-xs text-brand-navy">AI citations</div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="border-t border-brand-gray-200 pt-2 text-xs text-brand-navy">AI Citations</div>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {["Overview", "ChatGPT", "Perplexity", "Gemini", "Copilot"].map((name) => (
           <div key={name} className="border-b border-brand-gray-200 pb-3">
             <div className="text-xs text-brand-navy">{name}</div>
@@ -131,14 +131,14 @@ export function EmptyStateOverlay({
 
   return (
     <div
-      className="absolute inset-0 flex flex-col rounded-card bg-transparent p-4"
+      className="absolute inset-0 flex flex-col rounded-card bg-transparent"
       style={{
         backdropFilter: "blur(6px) blur(3px)",
         WebkitBackdropFilter: "blur(6px) blur(3px)",
       }}
     >
       <div className="flex items-center gap-1.5 border-b border-brand-gray-200 pb-2 text-base font-medium text-brand-navy">
-        SEO Insights &amp; AI citations
+        SEO Insights &amp; AI Citations
         <svg
           width="14"
           height="14"
@@ -161,9 +161,9 @@ export function EmptyStateOverlay({
         </svg>
       </div>
 
-      <div className="flex flex-1 flex-col items-center justify-center gap-5">
-        <h2 className="text-center text-2xl font-medium leading-[1.2] text-brand-navy">{title}</h2>
-        <AddProjectInput onSuccess={onAddSuccess} />
+      <div className="flex flex-1 flex-col items-center justify-center gap-4 sm:gap-5">
+        <h2 className="text-center text-xl font-medium leading-[1.2] text-brand-navy sm:text-2xl">{title}</h2>
+        <AddProjectInput className="max-w-full" onSuccess={onAddSuccess} />
       </div>
     </div>
   );

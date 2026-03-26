@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-
-const inter = Inter({
-  subsets: ["latin"],
-});
+import { euclidCircularB } from "./fonts";
 
 export const metadata: Metadata = {
   title: {
@@ -28,8 +24,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.className}>
-      <body className="min-h-screen bg-brand-gray-100 text-brand-navy">{children}</body>
+    <html lang="en" className={euclidCircularB.variable}>
+      <body className="min-h-screen bg-brand-gray-100 font-sans text-brand-navy">{children}</body>
     </html>
   );
 }

@@ -61,40 +61,47 @@ export default function AiCitations() {
 
   return (
     <section aria-label="AI Citations" className="space-y-4">
-      {/* Section header */}
+      {/* Section header (NOT blurred) */}
       <div className="flex items-center gap-1 border-b border-brand-gray-200 pb-2">
-        <h3 className="text-sm font-medium text-brand-navy sm:text-base">AI citations</h3>
+        <h3 className="text-sm font-medium text-brand-navy sm:text-base">AI Citations</h3>
         <span className="mb-2">
           <InfoIcon />
         </span>
       </div>
 
-      {/* Citations grid */}
-      <div className="space-y-0">
-        {/* Row 1: 3 columns with vertical dividers */}
-        <div className="flex flex-col sm:flex-row">
-          {row1.map((item, index) => (
-            <div key={item.name} className="flex flex-1">
-              <CitationCell item={item} />
-              {index < row1.length - 1 && (
-                <div className="hidden w-px shrink-0 bg-brand-gray-200 sm:block" />
-              )}
+      {/* Blurred content preview + coming soon overlay */}
+      <div className="relative overflow-hidden rounded-card border border-brand-gray-200">
+        <div aria-hidden="true" className="pointer-events-none select-none blur-[5px]">
+          {/* Citations grid */}
+          <div className="space-y-0 px-4 py-3">
+            {/* Row 1: always 3 columns (even on mobile) */}
+            <div className="grid grid-cols-3">
+              {row1.map((item, index) => (
+                <div
+                  key={item.name}
+                  className={`min-w-0 ${index < row1.length - 1 ? "border-r border-brand-gray-200" : ""}`}
+                >
+                  <CitationCell item={item} />
+                </div>
+              ))}
             </div>
-          ))}
+
+            {/* Row 2: 2 columns + empty third column for alignment (still side-by-side on mobile) */}
+            <div className="grid grid-cols-3">
+              {row2.map((item, index) => (
+                <div key={item.name} className={`min-w-0 ${index === 0 ? "border-r border-brand-gray-200" : ""}`}>
+                  <CitationCell item={item} />
+                </div>
+              ))}
+              <div />
+            </div>
+          </div>
         </div>
 
-        {/* Row 2: 2 columns + empty third column for alignment */}
-        <div className="flex flex-col sm:flex-row">
-          {row2.map((item, index) => (
-            <div key={item.name} className="flex flex-1">
-              <CitationCell item={item} />
-              {index < row2.length - 1 && (
-                <div className="hidden w-px shrink-0 bg-brand-gray-200 sm:block" />
-              )}
-            </div>
-          ))}
-          {/* Empty spacer for third column alignment */}
-          <div className="hidden flex-1 sm:block" />
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white/20 px-4 text-center">
+          <p role="status" className="text-2xl font-semibold leading-tight text-brand-navy sm:text-3xl">
+            AI Citations Coming Soon
+          </p>
         </div>
       </div>
     </section>
@@ -103,7 +110,7 @@ export default function AiCitations() {
 
 function CitationCell({ item }: { item: CitationItem }) {
   return (
-    <article className="w-full space-y-2 border-b border-brand-gray-200 py-3 pr-2.5 first:pt-0">
+    <article className="w-full space-y-2 border-b border-brand-gray-200 py-3 pr-0 first:pt-0 sm:pr-2.5">
       {/* Icon + Name */}
       <div className="flex items-center gap-1 text-sm font-normal text-brand-navy">
         {item.icon}
@@ -111,8 +118,8 @@ function CitationCell({ item }: { item: CitationItem }) {
       </div>
 
       {/* Main value + delta */}
-      <div className="flex items-end gap-1">
-        <span className="text-[32px] font-medium leading-none text-brand-blue">{item.value}</span>
+      <div className="flex flex-wrap items-end gap-1">
+        <span className="text-[28px] font-medium leading-none text-brand-blue sm:text-[32px]">{item.value}</span>
         {item.delta !== undefined && item.delta !== 0 ? (
           <span className={`text-sm font-medium leading-[13px] ${item.delta > 0 ? "text-brand-green" : "text-brand-orange"}`}>
             {item.delta > 0 ? `+${item.delta}` : item.delta}

@@ -29,7 +29,7 @@ export default function MetricCard({
       </div>
 
       <div className="flex flex-wrap items-end gap-x-1 gap-y-1">
-        <span className="text-[32px] font-medium leading-none text-brand-blue">{formattedValue}</span>
+        <span className="text-[28px] font-medium leading-none text-brand-blue sm:text-[32px]">{formattedValue}</span>
         {deltaText ? (
           <span className={`text-sm font-medium leading-[17px] ${getDeltaToneClass(value, oldValue)}`}>
             {deltaText}

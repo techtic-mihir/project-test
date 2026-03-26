@@ -1,7 +1,7 @@
 "use client";
 
 import { useId } from "react";
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, YAxis } from "recharts";
 import { formatChartAxisValue, formatMonthLabel } from "@/lib/formatters";
 import type { TrafficHistoryItem } from "@/types";
 
@@ -84,10 +84,10 @@ export default function TrafficChart({ data }: TrafficChartProps) {
 
       {/* Min/max on the right, over the chart — nudged so labels don’t sit on the stroke */}
       <div
-        className="pointer-events-none absolute right-0 flex flex-col justify-between text-right text-xs font-normal leading-none text-brand-gray-600"
+        className="pointer-events-none absolute right-0 flex flex-col justify-between text-right text-[10px] font-normal leading-none text-brand-gray-600 sm:text-xs"
         style={{
-          top: margin.top,
-          bottom: margin.bottom - 18,
+          top: margin.top - 15,
+          bottom: margin.bottom - 15,
         }}
       >
         <span className="block -translate-y-1.5 pr-px">{formatChartAxisValue(maxTraffic)}</span>

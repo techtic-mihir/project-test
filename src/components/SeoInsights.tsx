@@ -25,9 +25,9 @@ export default function SeoInsights({ metrics, oldMetrics, trafficHistory }: Seo
       </div>
 
       {/* Metrics grid: 3-column layout with vertical dividers */}
-      <div className="flex flex-col gap-4 lg:flex-row lg:gap-3">
+      <div className="flex flex-col gap-5 lg:flex-row lg:gap-3">
         {/* Column 1: Domain Rating + Gauge */}
-        <div className="flex flex-col gap-6 lg:w-[34%]">
+        <div className="flex flex-col gap-5 lg:w-[34%]">
           <MetricCard
             label="Domain Rating (DR)"
             value={metrics.DR}
@@ -51,7 +51,7 @@ export default function SeoInsights({ metrics, oldMetrics, trafficHistory }: Seo
               </span>
             </div>
             <div className="flex flex-wrap items-end gap-1">
-              <span className="text-[32px] font-medium leading-none text-brand-blue">
+              <span className="text-[28px] font-medium leading-none text-brand-blue sm:text-[32px]">
                 {metrics.TRAFFIC >= 1000 ? `${(metrics.TRAFFIC / 1000).toFixed(1)}K` : metrics.TRAFFIC}
               </span>
               {trafficDelta ? (
@@ -67,10 +67,10 @@ export default function SeoInsights({ metrics, oldMetrics, trafficHistory }: Seo
         {/* Vertical divider */}
         <div className="hidden w-px shrink-0 bg-brand-gray-200 lg:block" />
 
-        {/* Column 3: Keywords + Referring Domains stacked */}
-        <div className="flex flex-col gap-3 lg:w-[30%]">
+        {/* Column 3: Keywords + Referring Domains */}
+        <div className="grid grid-cols-2 gap-4 lg:flex lg:w-[30%] lg:flex-col lg:gap-3">
           <MetricCard label="Keywords" value={metrics.KEYWORDS} oldValue={oldMetrics?.KEYWORDS} />
-          <div className="border-b border-brand-gray-200" />
+          <div className="hidden border-b border-brand-gray-200 lg:block" />
           <MetricCard label="Referring Domains" value={metrics.RD} oldValue={oldMetrics?.RD} />
         </div>
       </div>

@@ -26,7 +26,7 @@ const config: Config = {
         btn: "30px",
       },
       fontFamily: {
-        sans: ["Euclid Circular B", "Inter", "sans-serif"],
+        sans: ["var(--font-euclid-circular-b)", "Euclid Circular B", "Inter", "sans-serif"],
       },
     },
   },
