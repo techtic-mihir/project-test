@@ -261,7 +261,7 @@ export default function ProjectsCardClient({
         <div className="ml-auto flex shrink-0 items-center justify-end gap-2">
           <button
             type="button"
-            className="inline-flex cursor-pointer w-[42px] h-[42px] items-center gap-1 rounded-btn bg-brand-gray-100 px-2.5 py-2 text-sm font-medium text-brand-navy transition-colors hover:bg-brand-gray-200 sm:px-3 sm:text-base"
+            className="inline-flex cursor-pointer h-[42px] w-[42px] items-center gap-1 rounded-btn bg-brand-gray-100 px-2.5 py-2 text-sm font-medium text-brand-navy transition-colors hover:bg-brand-gray-200 sm:h-auto sm:w-auto sm:px-3 sm:text-base"
             aria-label="Detailed Analytics"
           >
             <TrendUpIcon aria-hidden="true" />
