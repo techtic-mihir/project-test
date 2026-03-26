@@ -6,7 +6,9 @@ import {
   TrafficHistoryItem,
 } from "@/types";
 
-const BASE_URL = "https://hire-test-dbil.onrender.com";
+const BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ??
+  "https://hire-test-dbil.onrender.com";
 const REQUEST_TIMEOUT_MS = 90_000;
 
 async function request<T>(
