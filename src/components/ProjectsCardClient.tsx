@@ -7,6 +7,7 @@ import AiCitations from "@/components/AiCitations";
 import EmptyState, { DashboardGhostBackground, EmptyStateOverlay } from "@/components/EmptyState";
 import SeoInsights from "@/components/SeoInsights";
 import SkeletonLoader from "@/components/SkeletonLoader";
+import TabBorderWrapper from "@/components/TabBorderWrapper";
 import { getProjectMetrics, getProjectTrafficHistory } from "@/lib/api";
 import type { Metrics, ProjectItem, TrafficHistoryItem } from "@/types";
 import TopRightDirectionArrowIcon from "@/icons/top-right-direction-arrow.svg";
@@ -128,12 +129,134 @@ export default function ProjectsCardClient({
 
   const addOverlaySnapshot = addProjectBaseKey ? cache[addProjectBaseKey] : null;
 
+  // Compute the active tab index for the border wrapper
+  const activeTabIndex = useMemo(() => {
+    if (showAddProject) {
+      return initialProjects.length; // The "+ project" button is the last tab
+    }
+    if (activeProject) {
+      const idx = initialProjects.findIndex((p) => p.PROJECT === activeProject);
+      return idx >= 0 ? idx : 0;
+    }
+    return 0;
+  }, [showAddProject, activeProject, initialProjects]);
+
+  const hasProjects = initialProjects.length > 0;
+
+  // Tabs content (shared between border-wrapped and non-wrapped views)
+  const tabsRow = (
+    <div className="flex min-w-max flex-nowrap gap-3">
+      {initialProjects.map((project) => {
+        const isActive = !showAddProject && activeProject === project.PROJECT;
+        return (
+          <button
+            type="button"
+            key={project.PROJECT}
+            onClick={() => handleProjectChange(project.PROJECT)}
+            className={`inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-pill px-3 text-sm font-medium transition-all duration-200 ease-in-out ${
+              isActive
+                ? "border-[1.5px] border-brand-indigo bg-[rgba(62,79,234,0.10)] text-brand-indigo"
+                : "bg-brand-gray-100 text-brand-navy hover:bg-brand-gray-200"
+            }`}
+            aria-pressed={isActive}
+          >
+            {project.THUMBNAIL ? (
+              <Image
+                src={project.THUMBNAIL}
+                alt=""
+                className="h-[15px] w-[15px] rounded-full object-cover"
+                width={15}
+                height={15}
+              />
+            ) : (
+              <span className="h-[15px] w-[15px] rounded-full bg-brand-gray-200" aria-hidden="true" />
+            )}
+            <span>{project.PROJECT}</span>
+          </button>
+        );
+      })}
+
+      <button
+        type="button"
+        onClick={handleAddProjectClick}
+        className={`inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-pill px-3 text-sm font-medium transition-all duration-200 ease-in-out ${
+          showAddProject
+            ? "border-[1.5px] border-brand-indigo bg-[rgba(62,79,234,0.10)] text-brand-indigo"
+            : "bg-brand-gray-100 text-brand-navy hover:bg-brand-gray-200"
+        }`}
+        aria-label="Add project"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="8" cy="8" r="7" stroke={showAddProject ? "#3E4FEA" : "#2B456B"} strokeWidth="1.4" />
+          <path d="M8 5V11M5 8H11" stroke={showAddProject ? "#3E4FEA" : "#2B456B"} strokeWidth="1.4" strokeLinecap="round" />
+        </svg>
+        <span>project</span>
+      </button>
+    </div>
+  );
+
+  // Content area
+  const contentArea = (
+    <>
+      {!showAddProject ? (
+        <>
+          {isLoading ? (
+            <SkeletonLoader />
+          ) : error ? (
+            <div className="space-y-3 py-8 text-center">
+              <p className="text-sm text-red-600">{error}</p>
+              {activeProject ? (
+                <button
+                  type="button"
+                  className="rounded-pill bg-brand-gray-100 px-4 py-2 text-sm font-medium text-brand-navy transition-colors hover:bg-brand-gray-200"
+                  onClick={() => updateProjectData(activeProject)}
+                >
+                  Retry
+                </button>
+              ) : null}
+            </div>
+          ) : activeData ? (
+            <div key={activeProject} className="animate-fadeSlideUp space-y-4">
+              <SeoInsights
+                metrics={activeData.metrics}
+                oldMetrics={activeData.oldMetrics}
+                trafficHistory={activeData.trafficHistory}
+              />
+              <AiCitations />
+            </div>
+          ) : (
+            <SkeletonLoader />
+          )}
+        </>
+      ) : null}
+
+      {showAddProject ? (
+        <div className="relative overflow-hidden">
+          {addOverlaySnapshot ? (
+            <DashboardGhostBackground
+              snapshot={{
+                metrics: addOverlaySnapshot.metrics,
+                oldMetrics: addOverlaySnapshot.oldMetrics,
+                trafficHistory: addOverlaySnapshot.trafficHistory,
+              }}
+            />
+          ) : (
+            <div className="p-4">
+              <SkeletonLoader />
+            </div>
+          )}
+          <EmptyStateOverlay variant="add" onAddSuccess={handleAddProjectSuccess} />
+        </div>
+      ) : null}
+    </>
+  );
+
   return (
-    <div className="rounded-card bg-brand-white p-3.5 sm:p-6 lg:p-8">
+    <div className="rounded-card bg-brand-white py-3.5 px-1.5 sm:py-6 sm:px-3 lg:py-8 lg:px-4">
       {/* Header row */}
-      <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-center sm:justify-between px-1.5 sm:px-3 lg:px-4">
         <h1 className="text-xl font-medium text-brand-navy sm:text-2xl">
-          {initialProjects.length > 0 ? "Projekte" : "Projects"}
+          {hasProjects ? "Projekte" : "Projects"}
         </h1>
         <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-start">
           <button
@@ -154,112 +277,15 @@ export default function ProjectsCardClient({
         </div>
       </div>
 
-      {/* Project tabs */}
-      <div className="mb-6 ml-0 overflow-x-auto scrollbar-hide sm:mb-8 sm:ml-3">
-        <div className="flex min-w-max flex-nowrap gap-3">
-          {initialProjects.map((project) => {
-            const isActive = !showAddProject && activeProject === project.PROJECT;
-            return (
-              <button
-                type="button"
-                key={project.PROJECT}
-                onClick={() => handleProjectChange(project.PROJECT)}
-                className={`inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-pill px-3 text-sm font-medium transition-all duration-200 ease-in-out ${
-                  isActive
-                    ? "border-[1.5px] border-brand-indigo bg-[rgba(62,79,234,0.10)] text-brand-indigo"
-                    : "bg-brand-gray-100 text-brand-navy hover:bg-brand-gray-200"
-                }`}
-                aria-pressed={isActive}
-              >
-                {project.THUMBNAIL ? (
-                  <Image
-                    src={project.THUMBNAIL}
-                    alt=""
-                    className="h-[15px] w-[15px] rounded-full object-cover"
-                    width={15}
-                    height={15}
-                  />
-                ) : (
-                  <span className="h-[15px] w-[15px] rounded-full bg-brand-gray-200" aria-hidden="true" />
-                )}
-                <span>{project.PROJECT}</span>
-              </button>
-            );
-          })}
-
-          <button
-            type="button"
-            onClick={handleAddProjectClick}
-            className={`inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-pill px-3 text-sm font-medium transition-all duration-200 ease-in-out ${
-              showAddProject
-                ? "border-[1.5px] border-brand-indigo bg-[rgba(62,79,234,0.10)] text-brand-indigo"
-                : "bg-brand-gray-100 text-brand-navy hover:bg-brand-gray-200"
-            }`}
-            aria-label="Add project"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <circle cx="8" cy="8" r="7" stroke={showAddProject ? "#3E4FEA" : "#2B456B"} strokeWidth="1.4" />
-              <path d="M8 5V11M5 8H11" stroke={showAddProject ? "#3E4FEA" : "#2B456B"} strokeWidth="1.4" strokeLinecap="round" />
-            </svg>
-            <span>project</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Content area */}
-      {initialProjects.length > 0 ? (
-        <div className="relative rounded-card">
-          {!showAddProject ? (
-            <>
-              {isLoading ? (
-                <SkeletonLoader />
-              ) : error ? (
-                <div className="space-y-3 py-8 text-center">
-                  <p className="text-sm text-red-600">{error}</p>
-                  {activeProject ? (
-                    <button
-                      type="button"
-                      className="rounded-pill bg-brand-gray-100 px-4 py-2 text-sm font-medium text-brand-navy transition-colors hover:bg-brand-gray-200"
-                      onClick={() => updateProjectData(activeProject)}
-                    >
-                      Retry
-                    </button>
-                  ) : null}
-                </div>
-              ) : activeData ? (
-                <div key={activeProject} className="animate-fadeSlideUp space-y-4">
-                  <SeoInsights
-                    metrics={activeData.metrics}
-                    oldMetrics={activeData.oldMetrics}
-                    trafficHistory={activeData.trafficHistory}
-                  />
-                  <AiCitations />
-                </div>
-              ) : (
-                <SkeletonLoader />
-              )}
-            </>
-          ) : null}
-
-          {showAddProject ? (
-            <div className="relative overflow-hidden">
-              {addOverlaySnapshot ? (
-                <DashboardGhostBackground
-                  snapshot={{
-                    metrics: addOverlaySnapshot.metrics,
-                    oldMetrics: addOverlaySnapshot.oldMetrics,
-                    trafficHistory: addOverlaySnapshot.trafficHistory,
-                  }}
-                />
-              ) : (
-                <div className="p-4">
-                  <SkeletonLoader />
-                </div>
-              )}
-              <EmptyStateOverlay variant="add" onAddSuccess={handleAddProjectSuccess} />
-            </div>
-          ) : null}
-        </div>
+      {/* Tabs + Content with folder-tab border */}
+      {hasProjects ? (
+        <TabBorderWrapper
+          activeTabIndex={activeTabIndex}
+          tabsContent={tabsRow}
+          showBorder={!isLoading || !!activeData}
+        >
+          {contentArea}
+        </TabBorderWrapper>
       ) : (
         <EmptyState />
       )}

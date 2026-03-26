@@ -1,0 +1,196 @@
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+
+interface TabBorderWrapperProps {
+  /** Index of the active tab (0-based) within the tabs container */
+  activeTabIndex: number;
+  /** The tab buttons row content */
+  tabsContent: React.ReactNode;
+  /** The main content below the tabs */
+  children: React.ReactNode;
+  /** Whether to show the border (hide during loading/empty states) */
+  showBorder?: boolean;
+}
+
+interface TabRect {
+  left: number;
+  width: number;
+}
+
+const BODY_RADIUS = 16; // Corner radius for the main content area
+const TAB_RADIUS = 12; // Corner radius for the tab notch top corners
+const CONCAVE_RADIUS = 10; // Radius for the concave curves at tab-body junctions
+const STROKE_COLOR = "#E9EAEB";
+
+/**
+ * Generates an SVG path for the folder-tab border shape, matching the Figma design.
+ * The notch wraps around the active tab, then continues as a rounded
+ * rectangle around the content area. Uses concave curves at the junctions.
+ *
+ * Handles edge cases where the tab is near the left or right edge.
+ */
+function buildTabBorderPath(
+  w: number,
+  h: number,
+  tabLeft: number,
+  tabWidth: number,
+  notchHeight: number,
+): string {
+  const R = BODY_RADIUS;
+  const tr = TAB_RADIUS;
+  const cr = CONCAVE_RADIUS;
+  const tabRight = tabLeft + tabWidth;
+  const bodyTop = notchHeight;
+
+  // Determine if there's enough space for the left junction (body corner + concave curve)
+  const hasLeftSpace = tabLeft > R + cr + 2;
+  // Determine if there's enough space for the right junction
+  const hasRightSpace = tabRight + cr + R + 2 < w;
+
+  const segments: string[] = [];
+
+  // ---- Top of tab notch ----
+  segments.push(`M ${tabLeft + tr} 0.5`);
+  segments.push(`L ${tabRight - tr} 0.5`);
+
+  // ---- Top-right corner of tab ----
+  segments.push(`A ${tr} ${tr} 0 0 1 ${tabRight} ${tr + 0.5}`);
+
+  // ---- Right side of tab going down ----
+  if (hasRightSpace) {
+    // Standard: tab side → concave curve → body top edge
+    segments.push(`L ${tabRight} ${bodyTop - cr}`);
+    segments.push(`A ${cr} ${cr} 0 0 0 ${tabRight + cr} ${bodyTop}`);
+    segments.push(`L ${w - R} ${bodyTop}`);
+    segments.push(`A ${R} ${R} 0 0 1 ${w} ${bodyTop + R}`);
+  } else {
+    // Tab near right edge: smooth curve directly to body right edge
+    segments.push(`L ${tabRight} ${bodyTop - cr}`);
+    segments.push(`C ${tabRight} ${bodyTop} ${w} ${bodyTop} ${w} ${bodyTop + R}`);
+  }
+
+  // ---- Right edge down ----
+  segments.push(`L ${w} ${h - R}`);
+  segments.push(`A ${R} ${R} 0 0 1 ${w - R} ${h}`);
+
+  // ---- Bottom edge ----
+  segments.push(`L ${R} ${h}`);
+  segments.push(`A ${R} ${R} 0 0 1 0 ${h - R}`);
+
+  // ---- Left edge up ----
+  if (hasLeftSpace) {
+    // Standard: body left edge → body corner → horizontal → concave curve → tab left side
+    segments.push(`L 0 ${bodyTop + R}`);
+    segments.push(`A ${R} ${R} 0 0 1 ${R} ${bodyTop}`);
+    segments.push(`L ${tabLeft - cr} ${bodyTop}`);
+    segments.push(`A ${cr} ${cr} 0 0 0 ${tabLeft} ${bodyTop - cr}`);
+  } else {
+    // Tab near left edge: smooth curve directly from body left edge to tab
+    segments.push(`L 0 ${bodyTop + R}`);
+    segments.push(`C 0 ${bodyTop} ${tabLeft} ${bodyTop} ${tabLeft} ${bodyTop - cr}`);
+  }
+
+  // ---- Left side of tab going up ----
+  segments.push(`L ${tabLeft} ${tr + 0.5}`);
+
+  // ---- Top-left corner of tab ----
+  segments.push(`A ${tr} ${tr} 0 0 1 ${tabLeft + tr} 0.5`);
+
+  segments.push("Z");
+
+  return segments.join(" ");
+}
+
+export default function TabBorderWrapper({
+  activeTabIndex,
+  tabsContent,
+  children,
+  showBorder = true,
+}: TabBorderWrapperProps) {
+  const tabsRowRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [tabRect, setTabRect] = useState<TabRect | null>(null);
+  const [wrapperSize, setWrapperSize] = useState<{ width: number; height: number } | null>(null);
+
+  const NOTCH_HEIGHT = 50; // tab height (32) + vertical padding (6+6)
+
+  const measure = useCallback(() => {
+    if (!tabsRowRef.current || !wrapperRef.current) return;
+
+    const wrapperBox = wrapperRef.current.getBoundingClientRect();
+    const buttons = tabsRowRef.current.querySelectorAll<HTMLButtonElement>("button");
+
+    if (activeTabIndex >= 0 && activeTabIndex < buttons.length) {
+      const btn = buttons[activeTabIndex];
+      const btnBox = btn.getBoundingClientRect();
+
+      setTabRect({
+        left: btnBox.left - wrapperBox.left - 8,
+        width: btnBox.width + 16,
+      });
+    }
+
+    setWrapperSize({
+      width: wrapperBox.width,
+      height: wrapperBox.height,
+    });
+  }, [activeTabIndex]);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(measure);
+    return () => cancelAnimationFrame(frame);
+  }, [measure, activeTabIndex]);
+
+  useEffect(() => {
+    const observer = new ResizeObserver(measure);
+    if (wrapperRef.current) observer.observe(wrapperRef.current);
+    return () => observer.disconnect();
+  }, [measure]);
+
+  const showSvg = showBorder && tabRect && wrapperSize && wrapperSize.width > 0;
+
+  return (
+    <div ref={wrapperRef} className="relative" style={{ paddingTop: NOTCH_HEIGHT }}>
+      {/* SVG border overlay */}
+      {showSvg ? (
+        <svg
+          className="pointer-events-none absolute inset-0 z-0"
+          width={wrapperSize.width}
+          height={wrapperSize.height}
+          viewBox={`0 0 ${wrapperSize.width} ${wrapperSize.height}`}
+          fill="none"
+          aria-hidden="true"
+          style={{ overflow: "visible" }}
+        >
+          <path
+            d={buildTabBorderPath(
+              wrapperSize.width,
+              wrapperSize.height,
+              tabRect.left,
+              tabRect.width,
+              NOTCH_HEIGHT,
+            )}
+            fill="white"
+            stroke={STROKE_COLOR}
+            strokeWidth={1}
+          />
+        </svg>
+      ) : null}
+
+      {/* Tabs row — positioned inside the notch area */}
+      <div
+        ref={tabsRowRef}
+        className="absolute left-2 right-0 top-1 z-10 overflow-x-auto scrollbar-hide"
+        style={{ height: NOTCH_HEIGHT, padding: "6px 12px" }}
+      >
+        {tabsContent}
+      </div>
+
+      {/* Content area */}
+      <div className="relative z-10 px-4 pb-4 pt-3 sm:px-5 sm:pb-5">
+        {children}
+      </div>
+    </div>
+  );
+}
