@@ -27,6 +27,8 @@ export default function DomainRatingGauge({ value }: DomainRatingGaugeProps) {
         <defs>
           <linearGradient id="drGaugeGradient" x1="20" y1="95" x2="170" y2="95" gradientUnits="userSpaceOnUse">
             <stop offset="0%" stopColor="#0080FF1A" />
+            <stop offset="50%" stopColor="#0080FF" />
+            <stop offset="75%" stopColor="#0080FF" />
             <stop offset="100%" stopColor="#0080FF" />
           </linearGradient>
         </defs>
