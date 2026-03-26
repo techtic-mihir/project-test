@@ -59,16 +59,6 @@ export default function TrafficChart({ data }: TrafficChartProps) {
               return [yTop, yTop + span / 3, yTop + (2 * span) / 3, yBottom];
             }}
           />
-{/* 
-          <XAxis
-            dataKey="month"
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: "#ABABAB", fontSize: 10, fontWeight: 400 }}
-            interval={0}
-            minTickGap={8}
-            dy={6}
-          /> */}
 
           <Area
             type="monotone"
