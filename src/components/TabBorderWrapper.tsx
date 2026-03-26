@@ -125,10 +125,23 @@ export default function TabBorderWrapper({
       const btn = buttons[activeTabIndex];
       const btnBox = btn.getBoundingClientRect();
 
-      setTabRect({
-        left: btnBox.left - wrapperBox.left - 8,
-        width: btnBox.width + 16,
-      });
+      // Raw position relative to the wrapper (with padding around the tab)
+      const pad = 8;
+      let left = btnBox.left - wrapperBox.left - pad;
+      let right = btnBox.right - wrapperBox.left + pad;
+
+      // Clamp to container bounds so the notch never overflows
+      left = Math.max(0, left);
+      right = Math.min(wrapperBox.width, right);
+
+      // Only show notch if the tab has meaningful visible width
+      const clampedWidth = right - left;
+      if (clampedWidth > TAB_RADIUS * 2 + 4) {
+        setTabRect({ left, width: clampedWidth });
+      } else {
+        // Tab is almost entirely scrolled out — collapse notch to body edge
+        setTabRect(null);
+      }
     }
 
     setWrapperSize({
@@ -148,7 +161,25 @@ export default function TabBorderWrapper({
     return () => observer.disconnect();
   }, [measure]);
 
-  const showSvg = showBorder && tabRect && wrapperSize && wrapperSize.width > 0;
+  // Re-measure on horizontal scroll of the tabs row so the notch follows the tab
+  useEffect(() => {
+    const el = tabsRowRef.current;
+    if (!el) return;
+
+    let rafId = 0;
+    const handleScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(measure);
+    };
+
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      el.removeEventListener("scroll", handleScroll);
+      cancelAnimationFrame(rafId);
+    };
+  }, [measure]);
+
+  const showSvg = showBorder && wrapperSize && wrapperSize.width > 0;
 
   return (
     <div ref={wrapperRef} className="relative" style={{ paddingTop: NOTCH_HEIGHT }}>
@@ -161,16 +192,20 @@ export default function TabBorderWrapper({
           viewBox={`0 0 ${wrapperSize.width} ${wrapperSize.height}`}
           fill="none"
           aria-hidden="true"
-          style={{ overflow: "visible" }}
         >
           <path
-            d={buildTabBorderPath(
-              wrapperSize.width,
-              wrapperSize.height,
-              tabRect.left,
-              tabRect.width,
-              NOTCH_HEIGHT,
-            )}
+            d={
+              tabRect
+                ? buildTabBorderPath(
+                    wrapperSize.width,
+                    wrapperSize.height,
+                    tabRect.left,
+                    tabRect.width,
+                    NOTCH_HEIGHT,
+                  )
+                : // Fallback: plain rounded rectangle when tab is scrolled out of view
+                  `M ${BODY_RADIUS} ${NOTCH_HEIGHT} L ${wrapperSize.width - BODY_RADIUS} ${NOTCH_HEIGHT} A ${BODY_RADIUS} ${BODY_RADIUS} 0 0 1 ${wrapperSize.width} ${NOTCH_HEIGHT + BODY_RADIUS} L ${wrapperSize.width} ${wrapperSize.height - BODY_RADIUS} A ${BODY_RADIUS} ${BODY_RADIUS} 0 0 1 ${wrapperSize.width - BODY_RADIUS} ${wrapperSize.height} L ${BODY_RADIUS} ${wrapperSize.height} A ${BODY_RADIUS} ${BODY_RADIUS} 0 0 1 0 ${wrapperSize.height - BODY_RADIUS} L 0 ${NOTCH_HEIGHT + BODY_RADIUS} A ${BODY_RADIUS} ${BODY_RADIUS} 0 0 1 ${BODY_RADIUS} ${NOTCH_HEIGHT} Z`
+            }
             fill="white"
             stroke={STROKE_COLOR}
             strokeWidth={1}
