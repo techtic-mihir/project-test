@@ -254,14 +254,14 @@ export default function ProjectsCardClient({
   return (
     <div className="rounded-card bg-brand-white py-3.5 px-1.5 sm:py-6 sm:px-3 lg:py-8 lg:px-4">
       {/* Header row */}
-      <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-center sm:justify-between px-1.5 sm:px-3 lg:px-4">
-        <h1 className="text-xl font-medium text-brand-navy sm:text-2xl">
-          {hasProjects ? "Projekte" : "Projects"}
+      <div className="mb-6 flex items-center justify-between gap-3 sm:mb-8 px-1.5 sm:px-3 lg:px-4">
+        <h1 className="min-w-0 text-xl font-medium text-brand-navy sm:text-2xl">
+          Projects
         </h1>
-        <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-start">
+        <div className="ml-auto flex shrink-0 items-center justify-end gap-2">
           <button
             type="button"
-            className="inline-flex cursor-pointer items-center gap-1 rounded-btn bg-brand-gray-100 px-2.5 py-2 text-sm font-medium text-brand-navy transition-colors hover:bg-brand-gray-200 sm:px-3 sm:text-base"
+            className="inline-flex cursor-pointer w-[42px] h-[42px] items-center gap-1 rounded-btn bg-brand-gray-100 px-2.5 py-2 text-sm font-medium text-brand-navy transition-colors hover:bg-brand-gray-200 sm:px-3 sm:text-base"
             aria-label="Detailed Analytics"
           >
             <TrendUpIcon aria-hidden="true" />

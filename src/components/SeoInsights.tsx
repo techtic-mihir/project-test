@@ -15,7 +15,7 @@ export default function SeoInsights({ metrics, oldMetrics, trafficHistory }: Seo
   const trafficDelta = formatDeltaValue(metrics.TRAFFIC, oldMetrics?.TRAFFIC ?? null);
 
   return (
-    <section aria-label="SEO Insights" className="space-y-4 border-b border-brand-gray-200 pb-4">
+    <section aria-label="SEO Insights" className="space-y-4">
       {/* Section header */}
       <div className="flex items-center gap-1 border-b border-brand-gray-200 pb-2">
         <h3 className="text-base font-medium text-brand-navy">SEO Insights</h3>
@@ -74,8 +74,9 @@ export default function SeoInsights({ metrics, oldMetrics, trafficHistory }: Seo
         <div className="hidden w-px shrink-0 bg-brand-gray-200 lg:block" />
 
         {/* Column 3: Keywords + Referring Domains */}
-        <div className="grid grid-cols-2 gap-4 lg:flex lg:w-[30%] lg:flex-col lg:gap-3">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-3 lg:flex lg:w-[30%] lg:flex-col lg:gap-3">
           <MetricCard label="Keywords" value={metrics.KEYWORDS} oldValue={oldMetrics?.KEYWORDS} />
+          <div className="w-px bg-brand-gray-200 lg:hidden" aria-hidden="true" />
           <div className="hidden border-b border-brand-gray-200 lg:block" />
           <MetricCard label="Referring Domains" value={metrics.RD} oldValue={oldMetrics?.RD} />
         </div>
