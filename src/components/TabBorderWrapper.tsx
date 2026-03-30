@@ -18,9 +18,10 @@ interface TabRect {
   width: number;
 }
 
-const BODY_RADIUS = 16; // Corner radius for the main content area
-const TAB_RADIUS = 12; // Corner radius for the tab notch top corners
-const CONCAVE_RADIUS = 10; // Radius for the concave curves at tab-body junctions
+// Design requirement: 20px radius for all sides/curves in the SVG border.
+const BODY_RADIUS = 20; // Corner radius for the main content area
+const TAB_RADIUS = 20; // Corner radius for the tab notch top corners
+const CONCAVE_RADIUS = 20; // Radius for the concave curves at tab-body junctions
 const STROKE_COLOR = "#E9EAEB";
 
 /**
@@ -189,7 +190,7 @@ export default function TabBorderWrapper({
           className="pointer-events-none absolute inset-0 z-0"
           width={wrapperSize.width}
           height={wrapperSize.height}
-          viewBox={`0 0 ${wrapperSize.width} ${wrapperSize.height}`}
+          viewBox={`0 0 ${wrapperSize.width + 2} ${wrapperSize.height}`}
           fill="none"
           aria-hidden="true"
         >
@@ -217,7 +218,7 @@ export default function TabBorderWrapper({
       <div
         ref={tabsRowRef}
         className="absolute left-2 right-0 top-1 z-10 overflow-x-auto scrollbar-hide"
-        style={{ height: NOTCH_HEIGHT, padding: "6px 12px" }}
+        style={{ height: NOTCH_HEIGHT, padding: "6px 10px" }}
       >
         {tabsContent}
       </div>
