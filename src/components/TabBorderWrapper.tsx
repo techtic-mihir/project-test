@@ -208,8 +208,8 @@ export default function TabBorderWrapper({
             d={
               tabRect
                 ? buildTabBorderPath(
-                    wrapperSize.width,
-                    wrapperSize.height,
+                    wrapperSize.width - 3,
+                    wrapperSize.height - 5,
                     tabRect.left,
                     tabRect.width,
                     NOTCH_HEIGHT,
