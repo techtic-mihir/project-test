@@ -71,7 +71,7 @@ export default async function Home({ searchParams }: HomePageProps) {
 
   return (
     <main className="min-h-screen bg-brand-gray-100 px-4 py-6 sm:px-6 lg:px-8">
-      <div className="mx-auto w-full max-w-[674px]">
+      <div className="mx-auto w-full max-w-[750px]">
         <ProjectsCard
           projects={projects}
           activeProject={activeProject?.PROJECT ?? null}

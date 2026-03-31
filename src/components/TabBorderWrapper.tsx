@@ -86,9 +86,20 @@ function buildTabBorderPath(
     segments.push(`L ${tabLeft - cr} ${bodyTop}`);
     segments.push(`A ${cr} ${cr} 0 0 0 ${tabLeft} ${bodyTop - cr}`);
   } else {
-    // Tab near left edge: smooth curve directly from body left edge to tab
+    // Tab near left edge: keep the corner/concave radii consistent (prefer arcs over a sharp cubic).
     segments.push(`L 0 ${bodyTop + R}`);
-    segments.push(`C 0 ${bodyTop} ${tabLeft} ${bodyTop} ${tabLeft} ${bodyTop - cr}`);
+
+    // If the tab is extremely close to the edge, we can't fit a full R corner.
+    // Clamp the arc end X so we still get a rounded join without overshooting the tab.
+    const cornerEndX = Math.min(R, Math.max(0, tabLeft));
+    segments.push(`A ${R} ${R} 0 0 1 ${cornerEndX} ${bodyTop}`);
+
+    // Only add the straight segment if there is space before the concave arc.
+    if (tabLeft - cr > cornerEndX) {
+      segments.push(`L ${tabLeft - cr} ${bodyTop}`);
+    }
+
+    segments.push(`A ${cr} ${cr} 0 0 0 ${tabLeft} ${bodyTop - cr}`);
   }
 
   // ---- Left side of tab going up ----
@@ -216,7 +227,7 @@ export default function TabBorderWrapper({
       {/* Tabs row — positioned inside the notch area */}
       <div
         ref={tabsRowRef}
-        className="absolute left-2 right-0 top-1 z-10 overflow-x-auto scrollbar-hide"
+        className="absolute left-2 right-0 top-1 z-10 overflow-x-auto scrollbar-hide ml-2 mr-2"
         style={{ height: NOTCH_HEIGHT, padding: "6px 12px" }}
       >
         {tabsContent}
