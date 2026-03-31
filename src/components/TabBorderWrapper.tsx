@@ -88,8 +88,8 @@ function buildTabBorderPath(
     segments.push(`A ${cr} ${cr} 0 0 0 ${tabLeft} ${bodyTop - cr}`);
   } else {
     // Tab near left edge: smooth curve directly from body left edge to tab
-    segments.push(`L 0 ${bodyTop + R - 16}`);
-    segments.push(`C 0 ${bodyTop} ${tabLeft} ${bodyTop} ${tabLeft} ${bodyTop - cr + 10 }`);
+    segments.push(`L 0 ${bodyTop + R}`);
+    segments.push(`C 0 ${bodyTop} ${tabLeft} ${bodyTop} ${tabLeft} ${bodyTop - cr}`);
   }
 
   // ---- Left side of tab going up ----
@@ -217,7 +217,7 @@ export default function TabBorderWrapper({
       {/* Tabs row — positioned inside the notch area */}
       <div
         ref={tabsRowRef}
-        className="absolute left-4 right-0 top-1 z-10 overflow-x-auto scrollbar-hide"
+        className="absolute left-2 right-0 top-1 z-10 overflow-x-auto scrollbar-hide"
         style={{ height: NOTCH_HEIGHT, padding: "6px 10px" }}
       >
         {tabsContent}
