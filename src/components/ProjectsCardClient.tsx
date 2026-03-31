@@ -145,7 +145,7 @@ export default function ProjectsCardClient({
 
   // Tabs content (shared between border-wrapped and non-wrapped views)
   const tabsRow = (
-    <div className="flex min-w-max flex-nowrap gap-4 pt-0.5">
+    <div className="flex min-w-max flex-nowrap gap-4">
       {initialProjects.map((project) => {
         const isActive = !showAddProject && activeProject === project.PROJECT;
         return (

@@ -131,9 +131,7 @@ export function EmptyStateOverlay({
 
   return (
     <div
-      className={`absolute inset-0 flex flex-col rounded-card bg-transparent ${
-        variant === "first" ? "p-3.5 sm:p-4" : "p-0"
-      }`}
+      className="absolute inset-0 flex flex-col rounded-card bg-transparent"
       style={{
         backdropFilter: "blur(6px) blur(3px)",
         WebkitBackdropFilter: "blur(6px) blur(3px)",
