@@ -131,10 +131,15 @@ export function EmptyStateOverlay({
 
   return (
     <div
-      className="absolute inset-0 flex flex-col rounded-card bg-transparent"
+      className={`absolute inset-0 flex flex-col rounded-card bg-transparent ${
+        variant === "first" ? "p-3.5 sm:p-4" : "p-0"
+      }`}
       style={{
-        backdropFilter: "blur(6px) blur(3px)",
-        WebkitBackdropFilter: "blur(6px) blur(3px)",
+        // Safari can render a black/opaque backdrop when the element is fully transparent.
+        // Provide a tiny translucent background so the blur composites correctly.
+        backgroundColor: "rgba(255, 255, 255, 0.01)",
+        backdropFilter: "blur(3px)",
+        WebkitBackdropFilter: "blur(3px)",
       }}
     >
       <div className="flex items-center gap-1.5 border-b border-brand-gray-200 pb-2 text-base font-medium text-brand-navy">
